@@ -13,9 +13,9 @@ class VentanaPrincipal(QMainWindow):
         self.resize(600, 200)
         contenedor = QWidget()
 
-        leftcolumna = QImage()
-        centercolumna = QImage()
-        rightcolumna = QImage()
+        leftcolumna = QWidget()
+        centercolumna = QWidget()
+        rightcolumna = QWidget()
 
 
         lytPrincipal = QGridLayout()
