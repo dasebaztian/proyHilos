@@ -10,30 +10,30 @@ class VentanaPrincipal(QMainWindow):
         palabrasabuscar = []
         super().__init__()
         self.setWindowTitle("Mi buscador")
-        self.resize(600, 200)
-        contenedor = QWidget()
+        self.resize(600, 2000)
+        self.contenedor = QWidget()
 
         leftcolumna = QWidget()
         centercolumna = QWidget()
         rightcolumna = QWidget()
 
 
-        lytPrincipal = QGridLayout()
-        lblBusca = QLabel("Palabras de peliculas a buscar: ")
+        self.lytPrincipal = QGridLayout()
+        self.lblBusca = QLabel("Palabras de peliculas a buscar: ")
 
         self.lnedtTexto = QLineEdit()
-        btnBusca = QPushButton("Buscar")
-        btnBusca.clicked.connect(self.get_peliculas)
+        self.btnBusca = QPushButton("Buscar")
+        self.btnBusca.clicked.connect(self.get_peliculas)
 
-        lytPrincipal.addWidget(lblBusca, 0, 0)
-        lytPrincipal.addWidget(self.lnedtTexto, 0, 1)
-        lytPrincipal.addWidget(btnBusca, 0, 2)
-        lytPrincipal.addWidget(leftcolumna, 1, 0)
-        lytPrincipal.addWidget(centercolumna, 1, 1)
-        lytPrincipal.addWidget(rightcolumna, 1, 2)
+        self.lytPrincipal.addWidget(self.lblBusca, 0, 0)
+        self.lytPrincipal.addWidget(self.lnedtTexto, 0, 1)
+        self.lytPrincipal.addWidget(self.btnBusca, 0, 2)
+        self.lytPrincipal.addWidget(leftcolumna, 1, 0)
+        self.lytPrincipal.addWidget(centercolumna, 1, 1)
+        self.lytPrincipal.addWidget(rightcolumna, 1, 2)
 
-        contenedor.setLayout(lytPrincipal)
-        self.setCentralWidget(contenedor)
+        self.contenedor.setLayout(self.lytPrincipal)
+        self.setCentralWidget(self.contenedor)
 
     def get_peliculas(self):
         url_servicio = "http://clandestina-hds.com:8090/movies/title?search="
@@ -56,6 +56,9 @@ class VentanaPrincipal(QMainWindow):
         image_label = QLabel()
         image_label.setPixmap(QPixmap(image))
         image_label.show()
+        self.lytPrincipal.addWidget(image_label)
+        self.contenedor.setLayout(self.lytPrincipal)
+        self.setCentralWidget(self.contenedor)
 
 
 app = QApplication([])
