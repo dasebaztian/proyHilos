@@ -17,7 +17,6 @@ class VentanaPrincipal(QMainWindow):
         centercolumna = QWidget()
         rightcolumna = QWidget()
 
-
         self.lytPrincipal = QGridLayout()
         self.lblBusca = QLabel("Palabras de peliculas a buscar: ")
 
@@ -44,13 +43,14 @@ class VentanaPrincipal(QMainWindow):
 
         print(palabras)
         for i in palabras:
-            r = requests.get(url_servicio+i)
+            r = requests.get(url_servicio + i)
             peliculas_data = r.json()
             for pelicula in peliculas_data['results']:
-                print("La pelicula de nombre: {} \n Tiene una URL de imagen: {}".format(pelicula['title'], pelicula["image"]))
+                print("La pelicula de nombre: {} \n Tiene una URL de imagen: {}".format(pelicula['title'],pelicula["image"]))
                 self.mostrarimagenes(pelicula["image"])
 
-    def mostrarimagenes(self,url_image):
+
+    def mostrarimagenes(self, url_image):
         image = QImage()
         image.loadFromData(requests.get(url_image).content)
         pixi = QPixmap.fromImage(image).scaled(150, 150)
