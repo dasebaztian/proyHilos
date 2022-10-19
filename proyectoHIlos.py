@@ -10,7 +10,7 @@ class VentanaPrincipal(QMainWindow):
         palabrasabuscar = []
         super().__init__()
         self.setWindowTitle("Mi buscador")
-        self.resize(600, 2000)
+        self.resize(6000, 2000)
         self.contenedor = QWidget()
 
         leftcolumna = QWidget()
@@ -53,8 +53,10 @@ class VentanaPrincipal(QMainWindow):
     def mostrarimagenes(self,url_image):
         image = QImage()
         image.loadFromData(requests.get(url_image).content)
+        pixi = QPixmap.fromImage(image).scaled(150, 150)
         image_label = QLabel()
-        image_label.setPixmap(QPixmap(image))
+        image_label.setPixmap(QPixmap(pixi))
+
         image_label.show()
         self.lytPrincipal.addWidget(image_label)
         self.contenedor.setLayout(self.lytPrincipal)
