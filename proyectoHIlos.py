@@ -73,3 +73,5 @@ window = VentanaPrincipal()
 window.show()
 
 app.exec_()
+
+print('Hola mundo')
