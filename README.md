@@ -9,4 +9,27 @@ Proyecto de Hilos para la materia de Programación de Sistemas
 - Debera mostrar varios resultados por cada nombre de película ingresada para que el empleado pueda escoger el adecuado.
 - Además al mostrar las imagenes de las películas si se da clic en ella, se deberán mostrar algunos datos relevantes de la película.
 
+# Metodología
+#### Programación Concurrente
+Para definirla correctamente, debemos diferencias entre programa
+y proceso.
+- Programa: Conjunto de sentencias/instrucciones que se ejecutan
+secuencialmente. Se asemeja al concepto de clase dentro de la POO.
+Es por tanto un concepto estático.
+- Proceso: Básicamente, se puede definir como un programa en
+ejecución. Líneas de código en ejecución de manera dinámica. Se
+asemeja al concepto de objeto en POO.
 
+Se utilizara programación concurrente para realizar los procesos de las consultas en un menor tiempo. Para obtener velocidad en la ejecución del programa
+
+La concurrencia aparece cuando dos o más procesos son contemporáneos. Un caso particular es el paralelismo (programación paralela).
+
+La programación concurrente se encarga del estudio de las nociones de ejecución concurrente, así como sus problemas de comunicación
+y sincronización.
+
+#### Aspectos teoricos de hilos
+Un hilo es un proceso del sistema operativo con características distintas de las de un proceso normal:
+
+- Los hilos existen como subconjuntos de los procesos.
+- Los hilos comparten memoria y recursos.
+- Los hilos ocupan una dirección diferente en la memoria
