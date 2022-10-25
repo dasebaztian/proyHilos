@@ -4,68 +4,58 @@ from PyQt5.QtGui import QPixmap, QImage
 import requests
 import threading
 
-
 # Subclase QMainWindow
+
+
 class VentanaPrincipal(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Mi buscador")
-        self.resize(6000, 2000)
+        self.resize(600, 200)
         self.contenedor = QWidget()
-
-        leftcolumna = QWidget()
-        centercolumna = QWidget()
-        rightcolumna = QWidget()
-
         self.lytPrincipal = QGridLayout()
-        self.lblBusca = QLabel("Palabras de peliculas a buscar: ")
-
-        self.lnedtTexto = QLineEdit()
+        self.lblBusca = QLabel("Palabras de películas a buscar: ")
+        self.inlineText = QLineEdit()
         self.btnBusca = QPushButton("Buscar")
         self.btnBusca.clicked.connect(self.dividir_texto)
         self.lytPrincipal.addWidget(self.lblBusca, 0, 0)
-        self.lytPrincipal.addWidget(self.lnedtTexto, 0, 1)
+        self.lytPrincipal.addWidget(self.inlineText, 0, 1)
         self.lytPrincipal.addWidget(self.btnBusca, 0, 2)
-        self.lytPrincipal.addWidget(leftcolumna, 1, 0)
-        self.lytPrincipal.addWidget(centercolumna, 1, 1)
-        self.lytPrincipal.addWidget(rightcolumna, 1, 2)
         self.contenedor.setLayout(self.lytPrincipal)
         self.setCentralWidget(self.contenedor)
 
     def dividir_texto(self):
+        thread_lst = []
         palabras = []
-        lista = self.lnedtTexto.text()
+        lista = self.inlineText.text()
         for palabras in lista:
             palabras = lista.split(",")
-        print(palabras)
         for i in palabras:
-            self.get_peliculas(i)
+            self.get_movies(i)
+            # thread_lst = [threading.Thread(target=self.get_movies, args=i)]
+        print(thread_lst)
 
-    def get_peliculas(self, palabra):
+    def get_movies(self, palabra):
         url_servicio = "http://clandestina-hds.com:80/movies/title?search="
         r = requests.get(url_servicio + palabra)
-        peliculas_data = r.json()
-        index = 0
-        limit = 3
-        for pelicula in peliculas_data['results']:
-            print("La pelicula de nombre: {} \n Tiene una URL de imagen: {}".format(pelicula['title'],
-                                                                                    pelicula["image"]))
-            self.mostrarimagenes(pelicula["image"])
-            index = index + 1
-            if index == limit:
-                break
+        movies_data = r.json()
+        data_short = movies_data['results'][:3]
+        for movie in data_short:
+            print("La película de nombre: {} \n Tiene una URL de imagen: {}".format(movie['title'],
+                                                                                    movie["image"]))
+            self.show_images(movie["image"])
 
-    def mostrarimagenes(self, url_image):
+    def show_images(self, url_image):
         image = QImage()
         image.loadFromData(requests.get(url_image).content)
-        pixi = QPixmap.fromImage(image).scaled(150, 150)
+        pixi = QPixmap.fromImage(image).scaled(350, 250)
         image_label = QLabel()
         image_label.setPixmap(QPixmap(pixi))
-
         image_label.show()
         self.lytPrincipal.addWidget(image_label)
         self.contenedor.setLayout(self.lytPrincipal)
         self.setCentralWidget(self.contenedor)
+        self.resize(1000, 800)
 
 
 app = QApplication([])
