@@ -39,6 +39,7 @@ class VentanaPrincipal(QMainWindow):
         lista = self.inlineText.text()
         for palabras in lista:
             palabras = lista.split(",")
+        #
         # Codigo sin hilos
         # for i in palabras:
         #     self.get_movies(i, index)
