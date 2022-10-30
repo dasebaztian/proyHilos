@@ -1,12 +1,11 @@
-# Importar bibliotecas
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QGridLayout, QLineEdit, QPushButton, QLabel, \
      QVBoxLayout, QTextEdit
-from PyQt5.QtGui import QPixmap, QImage
+from PyQt5.QtGui import QPixmap, QImage, QDesktopServices
+from PyQt5.QtCore import QUrl
 import requests
 import threading
 
 
-# Subclase QMainWindow
 def custom_hook(args):
     print(f'Thread failed: {args.exc_value}')
 
@@ -35,55 +34,72 @@ class VentanaPrincipal(QMainWindow):
         self.setCentralWidget(self.contenedor)
 
     def dividir_texto(self):
-        thread_lst = []
         palabras = []
         index = 0
         lista = self.inlineText.text()
         for palabras in lista:
             palabras = lista.split(",")
-        for i in palabras:
-            self.get_movies(i, index)
-            index += 3
+        # Codigo sin hilos
+        # for i in palabras:
+        #     self.get_movies(i, index)
+        #     index += 3
 
         threading.excepthook = custom_hook
-        # thread_lst = [threading.Thread(target=self.get_movies, args=(k, index)) for k in palabras]
-        # for i in thread_lst:
-        #     i.start()
-        #     index += 3
-        #     print("Start")
-        # for i in thread_lst:
-        #     i.join()
-        #     print("Return")
+        thread_lst = [threading.Thread(target=self.get_movies, args=(k, index)) for k in palabras]
+        for i in thread_lst:
+            i.start()
+            index += 3
+            print("Start")
+        for i in thread_lst:
+            i.join()
+            print("Return")
         print(thread_lst)
-        self.resize(850, 800)
+        self.resize(750, 800)
 
     def get_movies(self, palabra, index):
-        url_servicio = "http://clandestina-hds.com:80/movies/title?search="
-        r = requests.get(url_servicio + palabra)
-        movies_data = r.json()
+        url_service_image = "http://clandestina-hds.com:80/movies/title?search="
+        url_service_video = "https://clandestina-hds.com/movies/"
+        data_total = requests.get(url_service_image + palabra)
+        movies_data = data_total.json()
         data_short = movies_data['results'][:3]
-        image = QImage()
-        image_label = QLabel()
         for movie in data_short:
-            print("La película de nombre: {} \n Tiene una URL de imagen: {}".format(movie['title'],
-                                                                                    movie["image"]))
-            image.loadFromData(requests.get(movie['image']).content)
-            pixi = QPixmap.fromImage(image).scaled(200, 200)
-            image_label.setPixmap(QPixmap(pixi))
-            image_label.show()
+            data_video = requests.get(url_service_video + movie['id'])
+            data2_video = data_video.json()
+            url_video = data2_video['trailer']['linkEmbed']
+            image = Poster(movie['image'], url_video)
             info_movie = QTextEdit("Resumen: " + movie['plot'])
             info_movie.setReadOnly(1)
             if 0 <= index < 3:
-                self.lyt_Images_Left.addWidget(image_label)
+                self.lyt_Images_Left.addWidget(image)
                 self.lyt_Images_Left.addWidget(info_movie)
             if 3 <= index < 6:
-                self.lyt_Images_Center.addWidget(image_label)
+                self.lyt_Images_Center.addWidget(image)
                 self.lyt_Images_Center.addWidget(info_movie)
             if index >= 6:
-                self.lyt_Images_Right.addWidget(image_label)
-                self.lyt_Images_Center.addWidget(info_movie)
+                self.lyt_Images_Right.addWidget(image)
+                self.lyt_Images_Right.addWidget(info_movie)
         print(index)
         self.setCentralWidget(self.contenedor)
+
+
+class Poster(QLabel):
+    image_url: str
+    video_url: str
+
+    def __init__(self, image_url: str, video_url: str):
+        super().__init__()
+        self.image_url = image_url
+        self.video_url = video_url
+        image = QImage()
+        image.loadFromData(requests.get(self.image_url).content)
+        pixmap = QPixmap(image)
+        pixmap = pixmap.scaledToWidth(200)
+        self.setPixmap(pixmap)
+
+    def mouseDoubleClickEvent(self, event):
+        if self.video_url is not None and self.video_url is not "":
+            url = QUrl(self.video_url)
+            QDesktopServices.openUrl(url)
 
 
 app = QApplication([])
