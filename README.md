@@ -33,3 +33,28 @@ Un hilo es un proceso del sistema operativo con características distintas de la
 - Los hilos existen como subconjuntos de los procesos.
 - Los hilos comparten memoria y recursos.
 - Los hilos ocupan una dirección diferente en la memoria
+##### Creación de hilos
+Para la utilización de hilos en **Python** primero se debe de crear el hilo o la lista de hilos en cuestión. 
+
+  **Hilo**. 
+
+  ```python
+     thread = threading.Thread(target=foo, args=(7, 'Hello World'))
+     thread.start()
+     thread.join()
+  ```
+  
+  
+  **Lista de hilos**. 
+  
+  
+  ```python
+  thread_lst = [threading.Thread(target=foo) for i in range(5)]
+
+  for i in thread_lst:
+    i.start()
+
+  for i in thread_lst:
+    i.join()
+    print('return')
+  ```
