@@ -12,6 +12,7 @@ def custom_hook(args):
 
 class VentanaPrincipal(QMainWindow):
     def __init__(self):
+        self.data_movies = []
         super().__init__()
         self.setWindowTitle("Mi buscador")
         self.resize(600, 200)
@@ -33,37 +34,41 @@ class VentanaPrincipal(QMainWindow):
         self.contenedor.setLayout(self.lytPrincipal)
         self.setCentralWidget(self.contenedor)
 
+
     def dividir_texto(self):
+        peliculas = []
         palabras = []
         index = 0
+        threading.excepthook = custom_hook
         lista = self.inlineText.text()
         for palabras in lista:
             palabras = lista.split(",")
-        #
-        # Codigo sin hilos
-        # for i in palabras:
-        #     self.get_movies(i, index)
-        #     index += 3
-
-        threading.excepthook = custom_hook
-        thread_lst = [threading.Thread(target=self.get_movies, args=(k, index)) for k in palabras]
+        thread_lst = [threading.Thread(target=self.get_movie, args=(k, index)) for k in palabras]
         for i in thread_lst:
             i.start()
             index += 3
             print("Start")
         for i in thread_lst:
-            i.join()
+            peliculas.append(i.join())
             print("Return")
-        print(thread_lst)
         self.resize(750, 800)
+        print(self.data_movies)
+        self.draw_movies(self.data_movies, index)
 
-    def get_movies(self, palabra, index):
+    def get_movie(self, palabra, index):
         url_service_image = "http://clandestina-hds.com:80/movies/title?search="
-        url_service_video = "https://clandestina-hds.com/movies/"
         data_total = requests.get(url_service_image + palabra)
         movies_data = data_total.json()
         data_short = movies_data['results'][:3]
         for movie in data_short:
+            print("La pelicula de nombre: " + movie['title'])
+            self.data_movies.append(movie)
+        print(index)
+
+    def draw_movies(self, data_movies, index):
+        index = 0
+        for movie in data_movies:
+            url_service_video = "https://clandestina-hds.com/movies/"
             data_video = requests.get(url_service_video + movie['id'])
             data2_video = data_video.json()
             url_video = data2_video['trailer']['linkEmbed']
@@ -79,6 +84,7 @@ class VentanaPrincipal(QMainWindow):
             if index >= 6:
                 self.lyt_Images_Right.addWidget(image)
                 self.lyt_Images_Right.addWidget(info_movie)
+            index += 1
         print(index)
         self.setCentralWidget(self.contenedor)
 
