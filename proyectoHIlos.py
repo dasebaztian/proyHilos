@@ -1,3 +1,10 @@
+"""
+Programación en Sistemas
+    Catedrática: Patricia Gonzalez Gaspar
+    Integrantes: Daniel Sebastián Sánchez Medina y Samuel Ruiz Castillo
+    Fecha de Entrega: 4 de Noviembre de 2022
+"""
+
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QGridLayout, QLineEdit, QPushButton, QLabel, \
      QVBoxLayout, QTextEdit
 from PyQt5.QtGui import QPixmap, QImage, QDesktopServices
@@ -15,7 +22,7 @@ class VentanaPrincipal(QMainWindow):
         self.data_movies = []
         super().__init__()
         self.setWindowTitle("Mi buscador")
-        self.resize(600, 200)
+        self.resize(600, 250)
         self.contenedor = QWidget()
         self.lyt_Images_Left = QVBoxLayout()
         self.lyt_Images_Center = QVBoxLayout()
